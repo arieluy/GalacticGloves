@@ -1,7 +1,8 @@
-using namespace std;
-
 #include <stdio.h>
 #include <iostream>
+
+
+using namespace std;
 
 class Monster
 {
@@ -22,8 +23,7 @@ public:
     red = r;
     green = g;
     blue = b;
-    cout << "New monster created at " << *x << *y << "\n";
-  }
+    cout << "New monster created at (" << *xpos << "," << *ypos << ")\n";  }
 
   ~Monster ()
   {
@@ -40,11 +40,12 @@ public:
 
   void find()
   {
-    cout << "Monster is at " << *xpos << *ypos << "\n";
+    cout << "Monster is at (" << *xpos << "," << *ypos << ")\n";
   }
 };
 
 
+/*
 int main()
 {
   int s = 4;
@@ -58,4 +59,4 @@ int main()
   monster.find();
   monster.move();
   monster.find();
-}
+}*/
