@@ -25,12 +25,27 @@ static void InterruptHandler(int signo) {
 
 static void DrawOnCanvas(Canvas *canvas) {
   canvas->Fill(0,0,0);
+
+  // Draw monsters
   for (int n = 0; n < numMonsters; n++) {
     monster = monsters[n];
     for (int i = 0; i < monster.size; i++) {
       canvas->SetPixel((monster.xpos)[i], (monster.ypos)[i],
                        monster.red, monster.green, monster.blue);
     }
+  }
+
+  // Draw gunner
+  for (int i = 0; i < 2; i++) {
+    canvas->SetPixel((gunner.x)[i], (gunner.y)[i],
+                     gunner.R, gunner.G, gunner.B);
+  }
+
+  // Draw bullets
+  for (int n = 0; n < numBullets; n++) {
+    bullet = bullets[n];
+    canvas->SetPixel(bullet.x, bullet.y,
+                     bullet.R, bullet.G, bullet.B);
   }
 }
 
