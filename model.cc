@@ -4,8 +4,9 @@
 
 #include "bullet.h"
 #include "gunner.h"
-#include "spacemonster.h"
+#include "spacemonsters.h"
 
+using namespace std; 
 
 int main() {
   bool gameOver = false; 

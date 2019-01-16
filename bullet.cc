@@ -2,6 +2,7 @@
 
 using namespace std; 
 
+/*
 class Bullet {
   public: 
     int size; 
@@ -17,7 +18,7 @@ class Bullet {
     int get_x(); 
     int get_y(); 
     void move(); 
-};
+};*/
 
 Bullet::Bullet(int R_new, int G_new, int B_new, 
                int x_init, int y_init, 

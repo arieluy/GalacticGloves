@@ -11,7 +11,7 @@ public:
 
   Monster(int, int*, int*, int, int, int);
   ~Monster();
-  void move()
-  void find()
+  void move();
+  void find();
 };
 

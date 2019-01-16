@@ -2,6 +2,7 @@
 
 using namespace std; 
 
+/*
 class Gunner {
   public: 
     int size; 
@@ -18,6 +19,7 @@ class Gunner {
     void set_x(int); 
     void set_angle(int); 
 };
+*/
 
 Gunner::Gunner() {
   R = 200; 
