@@ -25,10 +25,11 @@ static void InterruptHandler(int signo) {
 
 static void DrawOnCanvas(Canvas *canvas) {
   canvas->Fill(0,0,0);
-  for(int i = 0; i < 16; i++) {
-    for(int c = 0; c < 32; c++) {
-      canvas->SetPixel(c,i,100,100,100);
-      usleep(50000);
+  for (int n = 0; n < numMonsters; n++) {
+    monster = monsters[n];
+    for (int i = 0; i < monster.size; i++) {
+      canvas->SetPixel((monster.xpos)[i], (monster.ypos)[i],
+                       monster.red, monster.green, monster.blue);
     }
   }
 }
