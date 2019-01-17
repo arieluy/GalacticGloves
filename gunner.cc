@@ -29,19 +29,15 @@ Gunner::Gunner() {
   B = 200;
   angle = 0;
   size = 2;
-  x = new int[size];
-  y = new int[size];
-  x[0] = 15; //Gunner body
-  y[0] = 15;
-  x[1] = 15; //Gunner turret
-  y[1] = 14;
-  cout << "created new gunner at (" << x[0] << "," << y[0] << ") with color (" << R << "," << G << "," << B << ")\n\t" \
+  x0 = 15; //Gunner body
+  y0 = 15;
+  x1 = 15; //Gunner turret
+  y1 = 14;
+  cout << "created new gunner at (" << x0 << "," << y0 << ") with color (" << R << "," << G << "," << B << ")\n\t" \
           << "gunner angle is: " << angle << "\n";
 }
 
 Gunner::~Gunner() {
-  delete[] x;
-  delete[] y;
 }
 
 void Gunner::set_color(int R_new, int G_new, int B_new) {
@@ -54,29 +50,29 @@ void Gunner::set_color(int R_new, int G_new, int B_new) {
 //Update the position of the body of the Gunner
 // move left if -1, move right if 1
 void Gunner::set_x(int dir) {
-  int new_x;
-  new_x = x[0] + dir;
+  int new_x = x0 + dir;
+  cout << "new_x !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << x0;
   if(new_x >= 0 && new_x <= 31) {
-    x[0] = new_x;
+    x0 = new_x;
     if(new_x == 0 && angle == -1) {
       angle = 0;
     }
     else if(new_x == 31 && angle == 1) {
       angle = 0;
     }
-    x[1] = new_x + angle;
+    x1 = new_x + angle;
   }
-  cout << "Moved gunner to (" << x[0] << "," << y[0] << ") turret is at (" << x[1] << "," << y[1] << ")\n";
+  cout << "Moved gunner to (" << x0 << "," << y0 << ") turret is at (" << x1 << "," << y1 << ")\n";
 }
 
 //Update the angle to be to the left if -1, straight up if 0,
 //and to the right if 1
 void Gunner::set_angle(int new_angle) {
   //Check if new angle position is within bounds
-  if(x[0] == 0 && angle == -1) {
+  if(x0 == 0 && angle == -1) {
     angle = 0;
   }
-  else if(x[0] == 31 && angle == 1) {
+  else if(x0 == 31 && angle == 1) {
     angle = 0;
   }
   else {
@@ -84,15 +80,15 @@ void Gunner::set_angle(int new_angle) {
   }
   //Update coordinate of turret
   if(angle == -1) {
-    x[1] = x[0] -1;
+    x1 = x0 -1;
   }
   else if (angle == 1) {
-    x[1] = x[0] + 1;
+    x1 = x0 + 1;
   }
   else {
-    x[1] = x[0];
+    x1 = x0;
   }
-  cout << "Angle changed, gunner at(" << x[0] << "," << y[0] <<") turret is at (" << x[1] << "," << y[1] << ")\n";
+  cout << "Angle changed, gunner at(" << x0 << "," << y0 <<") turret is at (" << x1 << "," << y1 << ")\n";
 }
 
 

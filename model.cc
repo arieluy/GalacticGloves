@@ -56,16 +56,21 @@ int main(int argc, char *argv[]) {
       y[2] = y[0];
       x[3] = x[0] + 1;
       y[3] = y[0] + 1;
+      
       Monster newMonster = Monster(4, x, y, monsterR[rand_col],
                                    monsterG[rand_col], monsterB[rand_col]);
       //Append monster to monster list
       monsters.push_front(newMonster);
     }
+
+    cout << "MOVING ALL MONSTERS\n"; 
     //Move all monsters
     for(std::list<Monster>::iterator it = monsters.begin(); it != monsters.end(); it++) {
       it->move();
       it->find();
     }
+
+    cout << "MOVING ALL BULLETS\n"; 
     //Move all Bullets & remove all bullets that are out of range
     for(std::list<Bullet>::iterator it = bullets.begin(); it != bullets.end(); it++) {
       it->move();  //Move bullet
@@ -79,12 +84,14 @@ int main(int argc, char *argv[]) {
 
     //Move gunner
     //Create new bullets
+   
+    cout << "DRAW\n"; 
 
     DrawOnCanvas(canvas, monsters, gunner, bullets); // draws monster, bullets, gunner
-    usleep(1000);
+    usleep(500000);
   }
 
-  sleep(10);
+  usleep(3000000);
   clearLED(canvas);
   return 0;
 }

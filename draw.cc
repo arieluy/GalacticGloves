@@ -46,10 +46,10 @@ void DrawOnCanvas(Canvas *canvas, std::list<Monster> monsters,
   }
 
   // Draw gunner
-  for (int i = 0; i < 2; i++) {
-    canvas->SetPixel((gunner.x)[i], (gunner.y)[i],
-                     gunner.R, gunner.G, gunner.B);
-  }
+  canvas->SetPixel(gunner.x0, gunner.y0,
+                   gunner.R, gunner.G, gunner.B);
+  canvas->SetPixel(gunner.x1, gunner.y1,
+                   gunner.R, gunner.G, gunner.B);
 
   // Draw bullets
   for(std::list<Bullet>::iterator it = bullets.begin(); it != bullets.end();
