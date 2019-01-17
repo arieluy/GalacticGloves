@@ -16,6 +16,7 @@ all : $(BINARIES)
 
 $(RGB_LIBRARY): FORCE
 	$(MAKE) -C $(RGB_LIBDIR)
+
 monster : monster.o
 gunner : gunner.o
 bullet : bullet.o
