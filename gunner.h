@@ -1,8 +1,10 @@
 class Gunner {
   public: 
     int size; 
-    int* x; 
-    int* y; 
+    int x0;  
+    int y0;
+    int x1; 
+    int y1;
     int R; 
     int G; 
     int B; 
