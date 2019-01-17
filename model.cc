@@ -17,6 +17,7 @@ using rgb_matrix::Canvas;
 
 int main(int argc, char *argv[]) {
   bool gameOver = false;
+  int gameCounter = 0;
 
   //Monster Colors: R,G,B,Amber
   int monsterR [4] = {255, 0,   0,   255};
@@ -37,7 +38,10 @@ int main(int argc, char *argv[]) {
 
   Canvas *canvas = setupLED(argc, argv);
 
-  while(!gameOver) {
+  while(!gameOver && gameCounter < 20) {
+
+    gameCounter++;
+
     //Read from Controller
     if(true) { //(rand()%10+1) == 7) {
       int rand_col = rand()%4;
@@ -78,8 +82,9 @@ int main(int argc, char *argv[]) {
 
     DrawOnCanvas(canvas, monsters, gunner, bullets); // draws monster, bullets, gunner
     usleep(1000);
-    gameOver = true;
   }
+
+  sleep(10);
   clearLED(canvas);
   return 0;
 }
