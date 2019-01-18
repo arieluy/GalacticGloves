@@ -51,7 +51,6 @@ void Gunner::set_color(int R_new, int G_new, int B_new) {
 // move left if -1, move right if 1
 void Gunner::set_x(int dir) {
   int new_x = x0 + dir;
-  cout << "new_x !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << x0;
   if(new_x >= 0 && new_x <= 31) {
     x0 = new_x;
     if(new_x == 0 && angle == -1) {

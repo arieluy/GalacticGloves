@@ -4,49 +4,56 @@
 #include <iostream>
 #include <list>
 #include <unistd.h>
-#include <wiringSerial.h>
+//#include <wiringSerial.h>
 #include <string.h>
 #include <errno.h>
+#include <curses.h>
 
-
-#include "rpi-rgb-led-matrix-master/include/led-matrix.h"
+//#include "rpi-rgb-led-matrix-master/include/led-matrix.h"
 #include "bullet.h"
 #include "gunner.h"
 #include "monster.h"
-#include "draw.h"
+//#include "draw.h"
 
 
 using namespace std;
-using std::list;
-using rgb_matrix::Canvas;
+//using std::list;
+//using rgb_matrix::Canvas;
 
-char* get_arduino_line(int fd)
+/*char* get_arduino_line(int fd)
 {
-  cout << "GETTING ARDUINO COMMAND: " << char (serialGetchar(fd)) << "\n"; 
-  char* char_in; 
-  char* arduino_command; 
+  cout << "GETTING ARDUINO COMMAND: " << char (serialGetchar(fd)) << "\n";
+  char* char_in;
+  char* arduino_command;
   while(serialGetchar(fd) != 42) {
     cout << "WAITING FOR NEW LINE\n"
  }
   //while((char_in = serialGetchar(fd)) != "\n") {
-  //  strcat(arduino_command, char_in); 
-  //  cout << "COLLECTING STRING " << char_in << "\n"; 
+  //  strcat(arduino_command, char_in);
+  //  cout << "COLLECTING STRING " << char_in << "\n";
   //}
-  //cout << arduino_command; 
-  //return arduino_command;  
-  return NULL; 
-}
+  //cout << arduino_command;
+  //return arduino_command;
+  return NULL;
+}*/
 
 
 int main(int argc, char *argv[]) {
-  //Setup Arduino-RPi interface
-  int fd; //Run dmesg and search for Arduino to find port 
+  //TEMPORARY: keyboard input
+  initscr();
+  cbreak();
+  noecho();
+  keypad(stdscr, TRUE);
+  nodelay(stdscr, TRUE);
+
+  /* //Setup Arduino-RPi interface
+  int fd; //Run dmesg and search for Arduino to find port
   if ((fd = serialOpen ("/dev/ttyACM0", 9600)) < 0)
   {
-    fprintf (stderr, "Unable to open serial device: %s\n", 
+    fprintf (stderr, "Unable to open serial device: %s\n",
              strerror (errno)) ;
     return 1 ;
-  } 
+  }*/
 
   //Game Code
   bool gameOver = false;
@@ -69,16 +76,50 @@ int main(int argc, char *argv[]) {
   int y = 2;
   Gunner gunner = Gunner();
 
-  Canvas *canvas = setupLED(argc, argv);
+  //Canvas *canvas = setupLED(argc, argv);
 
   while(!gameOver && gameCounter < 20) {
-    get_arduino_line(fd);
+    //get_arduino_line(fd);
 
-    
     gameCounter++;
 
-    /*
-    if(true) { //(rand()%10+1) == 7) {
+    int ch = getch();
+    switch (ch) {
+      case KEY_LEFT: {
+        cout << "left\n";
+        gunner.set_x(-1);
+        break;
+      }
+      case KEY_RIGHT: {
+        cout << "right\n";
+        gunner.set_x(1);
+        break;
+      }
+      case KEY_UP: {
+        cout << "shoot\n";
+        Bullet newBullet = Bullet(100, 0, 0, gunner.x1, gunner.y1,
+                                  gunner.angle, -1);
+        bullets.push_front(newBullet);
+        break;
+      }
+      case 49: {
+        cout << "tilt left\n";
+        gunner.set_angle(-1);
+        break;
+      }
+      case 50: {
+        cout << "tilt up\n";
+        gunner.set_angle(0);
+        break;
+      }
+      case 51: {
+        cout << "tilt right\n";
+        gunner.set_angle(1);
+        break;
+      }
+    }
+
+    if((rand()%10+1) == 7) {
       int rand_col = rand()%4;
       int s = 4;
       int *x = new int[s];
@@ -91,21 +132,21 @@ int main(int argc, char *argv[]) {
       y[2] = y[0];
       x[3] = x[0] + 1;
       y[3] = y[0] + 1;
-      
+
       Monster newMonster = Monster(4, x, y, monsterR[rand_col],
                                    monsterG[rand_col], monsterB[rand_col]);
       //Append monster to monster list
       monsters.push_front(newMonster);
     }
 
-    cout << "MOVING ALL MONSTERS\n"; 
+    //cout << "MOVING ALL MONSTERS\n";
     //Move all monsters
     for(std::list<Monster>::iterator it = monsters.begin(); it != monsters.end(); it++) {
       it->move();
-      it->find();
+      //it->find();
     }
 
-    cout << "MOVING ALL BULLETS\n"; 
+    //cout << "MOVING ALL BULLETS\n";
     //Move all Bullets & remove all bullets that are out of range
     for(std::list<Bullet>::iterator it = bullets.begin(); it != bullets.end(); it++) {
       it->move();  //Move bullet
@@ -119,15 +160,15 @@ int main(int argc, char *argv[]) {
 
     //Move gunner
     //Create new bullets
-   
-    cout << "DRAW\n"; 
 
-    DrawOnCanvas(canvas, monsters, gunner, bullets); // draws monster, bullets, gunner
+    //cout << "DRAW\n";
+
+    //DrawOnCanvas(canvas, monsters, gunner, bullets); // draws monster, bullets, gunner
     usleep(500000);
-    */
   }
 
+  endwin(); // TEMPORARY
   usleep(3000000);
-  clearLED(canvas);
+  //clearLED(canvas);
   return 0;
 }
