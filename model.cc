@@ -32,6 +32,17 @@ using rgb_matrix::Canvas;
   return arduino_command;
 }*/
 
+bool Collides(Monster m, Bullet b) {
+  int* mx = m.xpos;
+  int* my = m.ypos;
+  int bx = b.x;
+  int by = b.y;
+  for (int i = 0; i < m.size; i++) {
+    if (mx[i] == bx && my[i] == by) return true;
+  }
+  return false;
+}
+
 int main(int argc, char *argv[]) {
   //TEMPORARY: keyboard input
   initscr();
@@ -65,7 +76,6 @@ int main(int argc, char *argv[]) {
 
   std::list<Monster> monsters;
   std::list<Bullet> bullets;
-
   
   Canvas *canvas = setupLED(argc, argv);
 
@@ -73,7 +83,7 @@ int main(int argc, char *argv[]) {
   int y = 2;
   Gunner gunner = Gunner();
 
-  while(!gameOver && gameCounter < 20) {
+  while(!gameOver && gameCounter < 40) {
     //char arduino_cmd;
     //arduino_cmd =  get_arduino_command(fd);
 
@@ -146,13 +156,19 @@ int main(int argc, char *argv[]) {
     //Move all Bullets & remove all bullets that are out of range
     for(std::list<Bullet>::iterator it = bullets.begin(); it != bullets.end(); it++) {
       it->move();  //Move bullet
-      //Remove if out of range
-      //if(it->get_x() < 0 || it->get_x() >= 35 || it->get_y() < 0 || it->get_y() >=16)y {
-        //bullets.erase(it);
     }
-    //bullets.remove_if([](Bullet bullet){ return (bullet.get_x() < 0 || bullet.get_x() >= 35 || bullet.get_y() < 0 || bullet.get_y() >=16); });
+
+    //Remove if out of range
+    bullets.remove_if([](Bullet bullet){ return (bullet.get_x() < 0 || bullet.get_x() >= 35 || bullet.get_y() < 0 || bullet.get_y() >=16); });
 
     //if(bullet hits monster, kill monster)
+
+    for(std::list<Bullet>::iterator b = bullets.begin(); b != bullets.end(); b++) {
+      for(std::list<Monster>::iterator m = monsters.begin(); m != monsters.end(); m++) {
+        if (Collides(*m,*b)) m->die();
+      }
+    }
+    monsters.remove_if([](Monster m){ return !(m.alive); });
 
     //Move gunner
     //Create new bullets

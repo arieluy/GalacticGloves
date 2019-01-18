@@ -13,6 +13,8 @@ Monster::Monster (int s, int *x, int *y, int r, int g, int b)
   red = r;
   green = g;
   blue = b;
+  speed = 1;
+  alive = true;
   cout << "New monster created at (" << *xpos << "," << *ypos << ")\n";
 }
 
@@ -34,7 +36,10 @@ void Monster::find()
   cout << "Monster is at (" << *xpos << "," << *ypos << ")\n";
 }
 
-
+void Monster::die()
+{
+  alive = false;
+}
 
 /*
 int main()
