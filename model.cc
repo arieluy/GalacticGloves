@@ -4,6 +4,10 @@
 #include <iostream>
 #include <list>
 #include <unistd.h>
+#include <wiringSerial.h>
+#include <string.h>
+#include <errno.h>
+
 
 #include "rpi-rgb-led-matrix-master/include/led-matrix.h"
 #include "bullet.h"
@@ -11,11 +15,40 @@
 #include "monster.h"
 #include "draw.h"
 
+
 using namespace std;
 using std::list;
 using rgb_matrix::Canvas;
 
+char* get_arduino_line(int fd)
+{
+  cout << "GETTING ARDUINO COMMAND: " << char (serialGetchar(fd)) << "\n"; 
+  char* char_in; 
+  char* arduino_command; 
+  while(serialGetchar(fd) != 42) {
+    cout << "WAITING FOR NEW LINE\n"
+ }
+  //while((char_in = serialGetchar(fd)) != "\n") {
+  //  strcat(arduino_command, char_in); 
+  //  cout << "COLLECTING STRING " << char_in << "\n"; 
+  //}
+  //cout << arduino_command; 
+  //return arduino_command;  
+  return NULL; 
+}
+
+
 int main(int argc, char *argv[]) {
+  //Setup Arduino-RPi interface
+  int fd; //Run dmesg and search for Arduino to find port 
+  if ((fd = serialOpen ("/dev/ttyACM0", 9600)) < 0)
+  {
+    fprintf (stderr, "Unable to open serial device: %s\n", 
+             strerror (errno)) ;
+    return 1 ;
+  } 
+
+  //Game Code
   bool gameOver = false;
   int gameCounter = 0;
 
@@ -34,15 +67,17 @@ int main(int argc, char *argv[]) {
 
   int x = 3;
   int y = 2;
-  Gunner gunner;
+  Gunner gunner = Gunner();
 
   Canvas *canvas = setupLED(argc, argv);
 
   while(!gameOver && gameCounter < 20) {
+    get_arduino_line(fd);
 
+    
     gameCounter++;
 
-    //Read from Controller
+    /*
     if(true) { //(rand()%10+1) == 7) {
       int rand_col = rand()%4;
       int s = 4;
@@ -89,10 +124,10 @@ int main(int argc, char *argv[]) {
 
     DrawOnCanvas(canvas, monsters, gunner, bullets); // draws monster, bullets, gunner
     usleep(500000);
+    */
   }
 
   usleep(3000000);
   clearLED(canvas);
   return 0;
 }
-
