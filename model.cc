@@ -20,22 +20,17 @@ using namespace std;
 //using std::list;
 //using rgb_matrix::Canvas;
 
-/*char* get_arduino_line(int fd)
+char get_arduino_command(int fd)
 {
-  cout << "GETTING ARDUINO COMMAND: " << char (serialGetchar(fd)) << "\n";
-  char* char_in;
-  char* arduino_command;
-  while(serialGetchar(fd) != 42) {
-    cout << "WAITING FOR NEW LINE\n"
- }
-  //while((char_in = serialGetchar(fd)) != "\n") {
-  //  strcat(arduino_command, char_in);
-  //  cout << "COLLECTING STRING " << char_in << "\n";
-  //}
-  //cout << arduino_command;
-  //return arduino_command;
-  return NULL;
-}*/
+  int char_in;
+  char arduino_command;
+  while(true) {
+    char_in = serialGetchar(fd);
+    if(char_in != 10) break;
+  }
+  arduino_command = char(char_in);
+  return arduino_command;
+}
 
 
 int main(int argc, char *argv[]) {
@@ -46,9 +41,9 @@ int main(int argc, char *argv[]) {
   keypad(stdscr, TRUE);
   nodelay(stdscr, TRUE);
 
-  /* //Setup Arduino-RPi interface
+  /*//Setup Arduino-RPi interface
   int fd; //Run dmesg and search for Arduino to find port
-  if ((fd = serialOpen ("/dev/ttyACM0", 9600)) < 0)
+  if ((fd = serialOpen ("/dev/ttyACM1", 9600)) < 0)
   {
     fprintf (stderr, "Unable to open serial device: %s\n",
              strerror (errno)) ;
@@ -72,14 +67,15 @@ int main(int argc, char *argv[]) {
   std::list<Monster> monsters;
   std::list<Bullet> bullets;
 
+
   int x = 3;
   int y = 2;
   Gunner gunner = Gunner();
 
-  //Canvas *canvas = setupLED(argc, argv);
-
   while(!gameOver && gameCounter < 20) {
-    //get_arduino_line(fd);
+    Canvas *canvas = setupLED(argc, argv);
+    //char arduino_cmd;
+    //arduino_cmd =  get_arduino_command(fd);
 
     gameCounter++;
 
