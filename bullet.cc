@@ -21,12 +21,13 @@ class Bullet {
     void move();
 };*/
 
-Bullet::Bullet(int R_new, int G_new, int B_new,
+Bullet::Bullet(int R_new, int G_new, int B_new, int color_new,
                int x_init, int y_init,
                int x_vel_init, int y_vel_init) {
   R = R_new;
   G = G_new;
   B = B_new;
+  color = color_new;
   size = 1;
   x = x_init;
   y = y_init;

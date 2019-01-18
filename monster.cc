@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Monster::Monster (int s, int *x, int *y, int r, int g, int b)
+Monster::Monster (int s, int *x, int *y, int r, int g, int b, int c, int d)
 {
   size = s;
   xpos = x;
@@ -13,7 +13,9 @@ Monster::Monster (int s, int *x, int *y, int r, int g, int b)
   red = r;
   green = g;
   blue = b;
-  speed = 1;
+  color = c;
+  speed = 5;
+  dir = d;
   alive = true;
   cout << "New monster created at (" << *xpos << "," << *ypos << ")\n";
 }
@@ -26,8 +28,24 @@ Monster::~Monster ()
 
 void Monster::move ()
 {
+  bool down = false;
   for (int i = 0; i < size; i++) {
-    xpos[i] = xpos[i] + 1;
+    if (xpos[i] == 31) {
+      dir = -1;
+      down = true;
+    } else if (xpos[i] == 0) 
+    {
+      dir = 1;
+      down = true;
+    }
+  }
+  
+  for (int i = 0; i < size; i++) {
+    if (down) {
+      ypos[i] = ypos[i] + 1;
+      if (ypos[i] >= 13) alive = false;
+    }
+    xpos[i] = xpos[i] + dir;
   }
 }
 

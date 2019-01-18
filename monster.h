@@ -8,10 +8,12 @@ public:
   int red;
   int green;
   int blue;
+  int color;
   int speed;
+  int dir;
   bool alive;
 
-  Monster(int, int*, int*, int, int, int);
+  Monster(int, int*, int*, int, int, int, int, int);
   ~Monster();
   void move();
   void find();

@@ -20,6 +20,8 @@ using namespace std;
 using std::list;
 using rgb_matrix::Canvas;
 
+int MAX_SECONDS = 30;
+
 /*char get_arduino_command(int fd)
 {
   int char_in;
@@ -33,6 +35,7 @@ using rgb_matrix::Canvas;
 }*/
 
 bool Collides(Monster m, Bullet b) {
+  if (m.color != b.color) return false;
   int* mx = m.xpos;
   int* my = m.ypos;
   int bx = b.x;
@@ -63,6 +66,7 @@ int main(int argc, char *argv[]) {
   //Game Code
   bool gameOver = false;
   int gameCounter = 0;
+  int score = 0;
 
   //Monster Colors: R,G,B,Amber
   int monsterR [4] = {255, 0,   0,   255};
@@ -83,12 +87,13 @@ int main(int argc, char *argv[]) {
   int y = 2;
   Gunner gunner = Gunner();
 
-  while(!gameOver && gameCounter < 40) {
+  while(!gameOver && gameCounter < MAX_SECONDS*25) {
     //char arduino_cmd;
     //arduino_cmd =  get_arduino_command(fd);
 
+    // Keeps track of game loops
     gameCounter++;
-
+   
     int ch = getch();
     switch (ch) {
       case KEY_LEFT: {
@@ -99,13 +104,6 @@ int main(int argc, char *argv[]) {
       case KEY_RIGHT: {
         cout << "right\n";
         gunner.set_x(1);
-        break;
-      }
-      case KEY_UP: {
-        cout << "shoot\n";
-        Bullet newBullet = Bullet(100, 0, 0, gunner.x1, gunner.y1,
-                                  gunner.angle, -1);
-        bullets.push_front(newBullet);
         break;
       }
       case 49: { // 1
@@ -123,15 +121,40 @@ int main(int argc, char *argv[]) {
         gunner.set_angle(1);
         break;
       }
+      case 97: { // a - red
+        Bullet newBullet = Bullet(bulletR[0], bulletG[0], bulletB[0], 0,  gunner.x1, gunner.y1,
+                                  gunner.angle, -1);
+        bullets.push_front(newBullet);
+        break;
+      }
+      case 115: { // s - green
+        Bullet newBullet = Bullet(bulletR[1], bulletG[1], bulletB[1], 1, gunner.x1, gunner.y1,
+                                  gunner.angle, -1);
+        bullets.push_front(newBullet);
+        break;
+      }
+      case 100: { // d - blue
+        Bullet newBullet = Bullet(bulletR[2], bulletG[2], bulletB[2], 2,  gunner.x1, gunner.y1,
+                                  gunner.angle, -1);
+        bullets.push_front(newBullet);
+        break;
+      }
+      case 102: { // f - yellow
+        Bullet newBullet = Bullet(bulletR[3], bulletG[3], bulletB[3], 3,  gunner.x1, gunner.y1,
+                                  gunner.angle, -1);
+        bullets.push_front(newBullet);
+        break;
+      }
+
     }
 
-    if((rand()%10+1) == 7) {
+    if((rand()%50+1) == 7) {
       int rand_col = rand()%4;
       int s = 4;
       int *x = new int[s];
       int *y = new int[s];
       x[0] = rand()%31;
-      y[0] = rand()%15;
+      y[0] = rand()%13;
       x[1] = x[0];
       y[1] = y[0] + 1;
       x[2] = x[0] + 1;
@@ -140,35 +163,43 @@ int main(int argc, char *argv[]) {
       y[3] = y[0] + 1;
 
       Monster newMonster = Monster(4, x, y, monsterR[rand_col],
-                                   monsterG[rand_col], monsterB[rand_col]);
+                                   monsterG[rand_col], monsterB[rand_col], rand_col, (rand()%2+1)*2-3);
       //Append monster to monster list
       monsters.push_front(newMonster);
     }
 
+    
+    if (gameCounter % 10 == 0) {
+      //cout << "MOVING ALL BULLETS\n";
+      //Move all Bullets & remove all bullets that are out of range
+      for(std::list<Bullet>::iterator it = bullets.begin(); it != bullets.end(); it++) {
+        it->move();  //Move bullet
+      }
+
+      //Remove if out of range
+      bullets.remove_if([](Bullet bullet){ return (bullet.get_x() < 0 || bullet.get_x() >= 35 || 
+                                                   bullet.get_y() < 0 || bullet.get_y() >=16); });
+    }
+    
     //cout << "MOVING ALL MONSTERS\n";
     //Move all monsters
     for(std::list<Monster>::iterator it = monsters.begin(); it != monsters.end(); it++) {
-      it->move();
+      if (gameCounter % (100 / it->speed) == 0) it->move();
       //it->find();
     }
 
-    //cout << "MOVING ALL BULLETS\n";
-    //Move all Bullets & remove all bullets that are out of range
-    for(std::list<Bullet>::iterator it = bullets.begin(); it != bullets.end(); it++) {
-      it->move();  //Move bullet
-    }
-
-    //Remove if out of range
-    bullets.remove_if([](Bullet bullet){ return (bullet.get_x() < 0 || bullet.get_x() >= 35 || bullet.get_y() < 0 || bullet.get_y() >=16); });
-
     //if(bullet hits monster, kill monster)
-
     for(std::list<Bullet>::iterator b = bullets.begin(); b != bullets.end(); b++) {
       for(std::list<Monster>::iterator m = monsters.begin(); m != monsters.end(); m++) {
-        if (Collides(*m,*b)) m->die();
+        if (Collides(*m,*b)) {
+          m->die();
+          b->size = 0;
+          score++;
+        }
       }
     }
     monsters.remove_if([](Monster m){ return !(m.alive); });
+    bullets.remove_if([](Bullet b){ return b.size == 0 ;});
 
     //Move gunner
     //Create new bullets
@@ -176,11 +207,13 @@ int main(int argc, char *argv[]) {
     //cout << "DRAW\n";
 
     DrawOnCanvas(canvas, monsters, gunner, bullets); // draws monster, bullets, gunner
-    usleep(500000);
+    usleep(40000); // 25 FPS
   }
 
   endwin(); // TEMPORARY
   usleep(3000000);
   clearLED(canvas);
+
+  cout << "SCORE: " << score << "\n";
   return 0;
 }
