@@ -9,18 +9,18 @@
 #include <errno.h>
 #include <curses.h>
 
-//#include "rpi-rgb-led-matrix-master/include/led-matrix.h"
+#include "rpi-rgb-led-matrix-master/include/led-matrix.h"
 #include "bullet.h"
 #include "gunner.h"
 #include "monster.h"
-//#include "draw.h"
+#include "draw.h"
 
 
 using namespace std;
-//using std::list;
-//using rgb_matrix::Canvas;
+using std::list;
+using rgb_matrix::Canvas;
 
-char get_arduino_command(int fd)
+/*char get_arduino_command(int fd)
 {
   int char_in;
   char arduino_command;
@@ -30,8 +30,7 @@ char get_arduino_command(int fd)
   }
   arduino_command = char(char_in);
   return arduino_command;
-}
-
+}*/
 
 int main(int argc, char *argv[]) {
   //TEMPORARY: keyboard input
@@ -67,13 +66,14 @@ int main(int argc, char *argv[]) {
   std::list<Monster> monsters;
   std::list<Bullet> bullets;
 
+  
+  Canvas *canvas = setupLED(argc, argv);
 
   int x = 3;
   int y = 2;
   Gunner gunner = Gunner();
 
   while(!gameOver && gameCounter < 20) {
-    Canvas *canvas = setupLED(argc, argv);
     //char arduino_cmd;
     //arduino_cmd =  get_arduino_command(fd);
 
@@ -98,17 +98,17 @@ int main(int argc, char *argv[]) {
         bullets.push_front(newBullet);
         break;
       }
-      case 49: {
+      case 49: { // 1
         cout << "tilt left\n";
         gunner.set_angle(-1);
         break;
       }
-      case 50: {
+      case 50: { // 2
         cout << "tilt up\n";
         gunner.set_angle(0);
         break;
       }
-      case 51: {
+      case 51: { // 3
         cout << "tilt right\n";
         gunner.set_angle(1);
         break;
@@ -147,10 +147,10 @@ int main(int argc, char *argv[]) {
     for(std::list<Bullet>::iterator it = bullets.begin(); it != bullets.end(); it++) {
       it->move();  //Move bullet
       //Remove if out of range
-      if(it->get_x() < 0 || it->get_x() >= 35 || it->get_y() < 0 || it->get_y() >=16) {
-        bullets.erase(it);
-      }
+      //if(it->get_x() < 0 || it->get_x() >= 35 || it->get_y() < 0 || it->get_y() >=16)y {
+        //bullets.erase(it);
     }
+    //bullets.remove_if([](Bullet bullet){ return (bullet.get_x() < 0 || bullet.get_x() >= 35 || bullet.get_y() < 0 || bullet.get_y() >=16); });
 
     //if(bullet hits monster, kill monster)
 
@@ -159,12 +159,12 @@ int main(int argc, char *argv[]) {
 
     //cout << "DRAW\n";
 
-    //DrawOnCanvas(canvas, monsters, gunner, bullets); // draws monster, bullets, gunner
+    DrawOnCanvas(canvas, monsters, gunner, bullets); // draws monster, bullets, gunner
     usleep(500000);
   }
 
   endwin(); // TEMPORARY
   usleep(3000000);
-  //clearLED(canvas);
+  clearLED(canvas);
   return 0;
 }
