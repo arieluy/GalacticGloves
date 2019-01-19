@@ -1,5 +1,5 @@
 g++ -c gunner.cc bullet.cc monster.cc draw.cc model.cc
 
-g++ gunner.o bullet.o monster.o draw.o model.o ./rpi-rgb-led-matrix-master/lib/*.o -pthread  -o gg
+g++ gunner.o bullet.o monster.o draw.o model.o ./rpi-rgb-led-matrix-master/lib/*.o -pthread -lwiringPi -o gg
 
 sudo ./gg

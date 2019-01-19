@@ -17,7 +17,7 @@ Monster::Monster (int s, int *x, int *y, int r, int g, int b, int c, int d)
   speed = 5;
   dir = d;
   alive = true;
-  cout << "New monster created at (" << *xpos << "," << *ypos << ")\n";
+  //cout << "New monster created at (" << *xpos << "," << *ypos << ")\n";
 }
 
 Monster::~Monster ()
@@ -43,7 +43,7 @@ void Monster::move ()
   for (int i = 0; i < size; i++) {
     if (down) {
       ypos[i] = ypos[i] + 1;
-      if (ypos[i] >= 13) alive = false;
+      if (ypos[i] >= 14) alive = false;
     }
     xpos[i] = xpos[i] + dir;
   }

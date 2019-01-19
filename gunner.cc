@@ -33,8 +33,8 @@ Gunner::Gunner() {
   y0 = 15;
   x1 = 15; //Gunner turret
   y1 = 14;
-  cout << "created new gunner at (" << x0 << "," << y0 << ") with color (" << R << "," << G << "," << B << ")\n\t" \
-          << "gunner angle is: " << angle << "\n";
+  //cout << "created new gunner at (" << x0 << "," << y0 << ") with color (" << R << "," << G << "," << B << ")\n\t" \
+         // << "gunner angle is: " << angle << "\n";
 }
 
 Gunner::~Gunner() {
@@ -44,7 +44,7 @@ void Gunner::set_color(int R_new, int G_new, int B_new) {
   R = R_new;
   G = G_new;
   B = B_new;
-  cout << "Changed gunner color to: (" << R << "," << G << "," << B << ")\n";
+ // cout << "Changed gunner color to: (" << R << "," << G << "," << B << ")\n";
 }
 
 //Update the position of the body of the Gunner
@@ -61,7 +61,7 @@ void Gunner::set_x(int dir) {
     }
     x1 = new_x + angle;
   }
-  cout << "Moved gunner to (" << x0 << "," << y0 << ") turret is at (" << x1 << "," << y1 << ")\n";
+  //cout << "Moved gunner to (" << x0 << "," << y0 << ") turret is at (" << x1 << "," << y1 << ")\n";
 }
 
 //Update the angle to be to the left if -1, straight up if 0,
@@ -87,7 +87,7 @@ void Gunner::set_angle(int new_angle) {
   else {
     x1 = x0;
   }
-  cout << "Angle changed, gunner at(" << x0 << "," << y0 <<") turret is at (" << x1 << "," << y1 << ")\n";
+  //cout << "Angle changed, gunner at(" << x0 << "," << y0 <<") turret is at (" << x1 << "," << y1 << ")\n";
 }
 
 

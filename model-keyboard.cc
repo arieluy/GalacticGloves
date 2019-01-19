@@ -4,12 +4,12 @@
 #include <iostream>
 #include <list>
 #include <unistd.h>
-#include <wiringSerial.h>
-#include <wiringPi.h>
+//#include <wiringSerial.h>
 #include <string.h>
 #include <errno.h>
 #include <curses.h>
 #include <ctime>
+#include <cstdlib>
 
 #include "rpi-rgb-led-matrix-master/include/led-matrix.h"
 #include "bullet.h"
@@ -18,24 +18,24 @@
 #include "draw.h"
 #include "text-example.cc"
 
+
 using namespace std;
 using std::list;
 using rgb_matrix::Canvas;
 
-int MAX_SECONDS = 30;
+int MAX_SECONDS = 10;
 
-char get_arduino_command(int fd)
+/*char get_arduino_command(int fd)
 {
   int char_in;
   char arduino_command;
-  
-  /*while(true) {
+  while(true) {
     char_in = serialGetchar(fd);
     if(char_in != 10) break;
-  }*/
-  arduino_command = char(serialGetchar(fd)); //char(char_in);
+  }
+  arduino_command = char(char_in);
   return arduino_command;
-}
+}*/
 
 bool Collides(Monster m, Bullet b) {
   if (m.color != b.color) return false;
@@ -54,7 +54,6 @@ int main(int argc, char *argv[]) {
   // random seed
   srand(time(NULL));
 
-
   //TEMPORARY: keyboard input
   initscr();
   cbreak();
@@ -62,86 +61,42 @@ int main(int argc, char *argv[]) {
   keypad(stdscr, TRUE);
   nodelay(stdscr, TRUE);
 
-  //Setup Arduino-RPi interface
+  /*//Setup Arduino-RPi interface
   int fd; //Run dmesg and search for Arduino to find port
-  if ((fd = serialOpen ("/dev/ttyACM0", 9600)) < 0)
+  if ((fd = serialOpen ("/dev/ttyACM1", 9600)) < 0)
   {
-    fprintf (stderr, "Unable to open serial device: u%s\n",
+    fprintf (stderr, "Unable to open serial device: %s\n",
              strerror (errno)) ;
     return 1 ;
-  }
+  }*/
 
-  //wiringpi gpio interface setup
-  //a - physical pin 31 - wpi pin 22
-  //s - physical pin 33 - wpi pin 23
-  //d - physical pin 35 - wpi pin 24
-  //f - physical pin 37 - wpi pin 24
-
-  wiringPiSetup () ;
-  int pin_a = 22; 
-  int pin_b = 23; 
-  int pin_c = 24; 
-  int pin_d = 25; 
-
-  pinMode(pin_a, INPUT);
-  pinMode(pin_b, INPUT);
-  pullUpDnControl(pin_b, PUD_OFF); 
-  pinMode(pin_c, INPUT);
-  pullUpDnControl(pin_c, PUD_OFF); 
-  pinMode(pin_d, INPUT);
-  pullUpDnControl(pin_d, PUD_OFF); 
-  
-
-  //game code
-  bool gameover = false;
+  //Game Code
+  bool gameOver = false;
   int gameCounter = 0;
   int score = 0;
 
-  //monster colors: r,g,b,amber
+  //Monster Colors: R,G,B,Amber
   int monsterR [4] = {255, 0,   0,   255};
   int monsterG [4] = {0,   255, 0,   200};
   int monsterB [4] = {0,   0,   255, 0};
 
-  //bullet colors: magenta, light green, cyan, yellow
+  //Bullet Colors: magenta, light green, cyan, yellow
   int bulletR [4] = {255,   50,     0,   255};
-  int bulletG [4] = {0,    255,   255,   100};
-  int bulletB [4] = {100,   50,   255,   0};
+  int bulletG [4] = {0,    255,   255,   255};
+  int bulletB [4] = {255,   50,   255,   0};
 
   std::list<Monster> monsters;
   std::list<Bullet> bullets;
   
   Canvas *canvas = setupLED(argc, argv);
-  
+
   int x = 3;
   int y = 2;
   Gunner gunner = Gunner();
 
-  while(!gameover && gameCounter < MAX_SECONDS*25) {
-    char arduino_cmd = 0;
-    int digital_cmd = 0;
-
-  wiringPiSetup () ;
-
-  int a;
-  int b; 
-  int c; 
-  int d; 
-  //a = digitalRead(pin_a); 
-  //b = digitalRead(pin_b); 
-  //c = digitalRead(pin_c); 
-  //d = digitalRead(pin_d); 
-   
- // cout << "a" << a << " b " <<  b << " c" << c << " d " << d << "\n"; 
-   digital_cmd = 0; 
-    if(digitalRead(22) == LOW) digital_cmd = 97; 
-    if(digitalRead(23) == LOW) digital_cmd = 115;
-    if(digitalRead(24) == LOW) digital_cmd = 100; 
-    if(digitalRead(25) == LOW) digital_cmd = 102; 
-    //else digital_cmd = 0; 
-    cout << digital_cmd << "\n"; 
- 
+  while(!gameOver && gameCounter < MAX_SECONDS*25) {
+    //char arduino_cmd;
     //arduino_cmd =  get_arduino_command(fd);
-    //cout << arduino_cmd << "\n";
 
     // Keeps track of game loops
     gameCounter++;
@@ -168,10 +123,6 @@ int main(int argc, char *argv[]) {
         gunner.set_angle(1);
         break;
       }
-    }
-
-    switch(digital_cmd) {
-      case 0: break;
       case 97: { // a - red
         Bullet newBullet = Bullet(bulletR[0], bulletG[0], bulletB[0], 0,  gunner.x1, gunner.y1,
                                   gunner.angle, -1);
@@ -196,13 +147,10 @@ int main(int argc, char *argv[]) {
         bullets.push_front(newBullet);
         break;
       }
+
     }
 
-    int difficulty;
-    if (score > 60) difficulty = 20;
-    else difficulty = 80 - score;
-
-    if((rand()%difficulty+1) == 7) {
+    if((rand()%50+1) == 7) {
       int rand_col = rand()%4;
       int s = 4;
       int *x = new int[s];
@@ -262,20 +210,19 @@ int main(int argc, char *argv[]) {
     //cout << "DRAW\n";
 
     DrawOnCanvas(canvas, monsters, gunner, bullets); // draws monster, bullets, gunner
-    
-
     usleep(40000); // 25 FPS
   }
 
+  endwin(); // TEMPORARY
+  
   char buffer [50];
   sprintf(buffer, "%d", score);
   const char* c = buffer;
 
-  endwin(); // TEMPORARY
   displayText(argc, argv, canvas, c);
-  usleep(5000000);
+  usleep(3000000);
   clearLED(canvas);
 
   cout << "\nSCORE: " << score << "\n\n";
-  return 0;
+    return 0;
 }

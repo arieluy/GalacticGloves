@@ -36,6 +36,13 @@ void DrawOnCanvas(Canvas *canvas, std::list<Monster> monsters,
                          Gunner gunner, std::list<Bullet> bullets) {
   canvas->Fill(0,0,0);
 
+  // draw floor
+  for (int i = 0; i < 32; i++) {
+    for (int j = 14; j < 16; j++) {
+      canvas->SetPixel(i, j, 10, 10, 20);
+    }
+  }
+
   // Draw monsters
   for(std::list<Monster>::iterator it = monsters.begin(); it != monsters.end();
       it++) {

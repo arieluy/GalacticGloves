@@ -33,14 +33,14 @@ Bullet::Bullet(int R_new, int G_new, int B_new, int color_new,
   y = y_init;
   x_vel = x_vel_init;
   y_vel = y_vel_init;
-  cout << "created new bullet at (" << x << "," << y << ") with color (" << R << "," << G << "," << B << ")\n\t"
-          << "and velocity (" << x_vel << "," << y_vel << ")\n";
+  //cout << "created new bullet at (" << x << "," << y << ") with color (" << R << "," << G << "," << B << ")\n\t"
+          //<< "and velocity (" << x_vel << "," << y_vel << ")\n";
 }
 
 void Bullet::move() {
   x = x+x_vel;
   y = y+y_vel;
-  cout << "Moved bullet to (" << x << "," << y << ")\n";
+  //cout << "Moved bullet to (" << x << "," << y << ")\n";
 };
 
 int Bullet::get_x() {
